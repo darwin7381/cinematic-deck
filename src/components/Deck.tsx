@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type ReactElement } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactElement } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 export type SlideRenderer = (props: {
@@ -14,15 +14,19 @@ type DeckProps = {
 }
 
 /**
- * Core deck shell: keyboard nav, URL hash persistence, progress bar,
- * step-based progressive reveal coordination, and slide transitions.
+ * Core deck shell: keyboard + touch nav, URL hash persistence,
+ * progress bar, step-based progressive reveal, and slide transitions.
  *
- * ArrowRight/Space:
- *   - If current slide has unconsumed steps, advance step
- *   - Otherwise move to next slide
- * ArrowLeft/Backspace:
- *   - If current step > 0, retreat step
- *   - Otherwise previous slide
+ * Keyboard:
+ *   ArrowRight / Space / Enter  → advance (within slide step OR next slide)
+ *   ArrowLeft / Backspace       → retreat
+ *   Home / End                  → jump first/last
+ *
+ * Touch:
+ *   Swipe left  → next
+ *   Swipe right → prev
+ *   Tap left 30%  → prev
+ *   Tap right 30% → next
  */
 export function Deck({ slides }: DeckProps) {
   const [index, setIndex] = useState(() => {
@@ -34,7 +38,6 @@ export function Deck({ slides }: DeckProps) {
 
   const onStepsChange = useCallback((n: number) => setTotalSteps(n), [])
 
-  // Reset step when slide changes
   useEffect(() => {
     setStep(0)
     setTotalSteps(0)
@@ -50,21 +53,16 @@ export function Deck({ slides }: DeckProps) {
   }, [])
 
   const advance = useCallback(() => {
-    if (step < totalSteps) {
-      setStep((s) => s + 1)
-    } else {
-      next()
-    }
+    if (step < totalSteps) setStep((s) => s + 1)
+    else next()
   }, [step, totalSteps, next])
 
   const retreat = useCallback(() => {
-    if (step > 0) {
-      setStep((s) => s - 1)
-    } else {
-      prev()
-    }
+    if (step > 0) setStep((s) => s - 1)
+    else prev()
   }, [step, prev])
 
+  // Keyboard
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
@@ -73,17 +71,14 @@ export function Deck({ slides }: DeckProps) {
       } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
         e.preventDefault()
         retreat()
-      } else if (e.key === 'Home') {
-        setIndex(0)
-      } else if (e.key === 'End') {
-        setIndex(slides.length - 1)
-      }
+      } else if (e.key === 'Home') setIndex(0)
+      else if (e.key === 'End') setIndex(slides.length - 1)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [advance, retreat, slides.length])
 
-  // React to hash changes (back/forward buttons)
+  // Hash sync
   useEffect(() => {
     const onHash = () => {
       const hash = parseInt(window.location.hash.slice(1), 10)
@@ -93,10 +88,49 @@ export function Deck({ slides }: DeckProps) {
     return () => window.removeEventListener('hashchange', onHash)
   }, [slides.length])
 
+  // Touch: swipe + tap zones
+  const touchRef = useRef<{ x: number; y: number; t: number } | null>(null)
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    const t = e.touches[0]
+    touchRef.current = { x: t.clientX, y: t.clientY, t: Date.now() }
+  }, [])
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    const start = touchRef.current
+    if (!start) return
+    const endT = e.changedTouches[0]
+    const dx = endT.clientX - start.x
+    const dy = endT.clientY - start.y
+    const dt = Date.now() - start.t
+    const absX = Math.abs(dx)
+    const absY = Math.abs(dy)
+
+    // Swipe: horizontal movement dominates, min distance, reasonably fast
+    if (absX > 50 && absX > absY * 1.5 && dt < 700) {
+      if (dx < 0) advance()
+      else retreat()
+      return
+    }
+
+    // Tap (minimal movement + short duration): zone-based navigation
+    if (absX < 12 && absY < 12 && dt < 300) {
+      const w = window.innerWidth
+      const x = endT.clientX
+      if (x < w * 0.3) retreat()
+      else if (x > w * 0.7) advance()
+      // middle 40%: do nothing (leave room for interactive elements)
+    }
+  }, [advance, retreat])
+
   const Current = slides[index]
 
   return (
-    <>
+    <div
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      style={{ touchAction: 'pan-y' }}
+    >
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
@@ -130,10 +164,10 @@ export function Deck({ slides }: DeckProps) {
         {String(index + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
       </div>
 
-      {/* Keyboard hint */}
-      <div className="fixed bottom-4 left-6 z-50 font-mono text-[10px] text-white/30 tracking-widest select-none">
-        ← → navigate  ·  space advance  ·  home/end jump
+      {/* Keyboard / touch hint — hidden on very small viewports to save space */}
+      <div className="fixed bottom-4 left-6 z-50 font-mono text-[10px] text-white/30 tracking-widest select-none hidden sm:block">
+        ← → / space / swipe / tap edges
       </div>
-    </>
+    </div>
   )
 }

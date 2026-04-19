@@ -1,18 +1,21 @@
 import { type ReactNode } from 'react'
-import { useSlideScale } from '../hooks/useSlideScale'
+import { useSlideScale, type Orientation } from '../hooks/useSlideScale'
 
 type SlideProps = {
-  children: ReactNode
-  background?: string // CSS background value
+  children: ReactNode | ((ctx: { orientation: Orientation }) => ReactNode)
+  background?: string
   className?: string
 }
 
 /**
- * Renders a 1920×1080 "canvas" slide, letterboxed to fit the viewport.
- * Children write layout in absolute 1920×1080 coordinate system.
+ * Renders a fixed canvas (1920×1080 landscape OR 1080×1920 portrait)
+ * letterboxed/pillarboxed to fit the viewport.
+ *
+ * Children can be a render-prop that receives the current orientation,
+ * allowing each slide to provide landscape vs portrait layout variants.
  */
 export function Slide({ children, background, className }: SlideProps) {
-  const { scale, width, height } = useSlideScale()
+  const { scale, width, height, orientation } = useSlideScale()
 
   return (
     <div
@@ -29,7 +32,7 @@ export function Slide({ children, background, className }: SlideProps) {
           background: background ?? '#050518',
         }}
       >
-        {children}
+        {typeof children === 'function' ? children({ orientation }) : children}
       </div>
     </div>
   )
