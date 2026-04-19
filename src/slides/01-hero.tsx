@@ -78,7 +78,7 @@ export default function Hero01({ onStepsChange }: {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 className={`font-bold leading-[0.95] tracking-[-0.04em] ${
-                  isPortrait ? 'text-[150px] mb-14' : 'text-[140px] mb-10'
+                  isPortrait ? 'text-[110px] mb-14' : 'text-[140px] mb-10'
                 }`}
                 style={{
                   background: 'linear-gradient(180deg, #fff 0%, #c4b5fd 60%, #f0abfc 100%)',
@@ -94,12 +94,12 @@ export default function Hero01({ onStepsChange }: {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className={`text-white/60 leading-relaxed font-light ${
-                  isPortrait ? 'text-4xl max-w-[900px]' : 'text-2xl max-w-[720px]'
+                  isPortrait ? 'text-[26px] max-w-full' : 'text-2xl max-w-[720px]'
                 }`}
               >
-                React · Framer Motion · react-three-fiber · drei · shadcn
+                React · Framer Motion · R3F · drei · shadcn
                 <br />
-                <span className="text-white/40">No framework sandbox. Pure component freedom.</span>
+                <span className="text-white/40">No framework sandbox.<br />Pure component freedom.</span>
               </motion.p>
 
               <motion.div

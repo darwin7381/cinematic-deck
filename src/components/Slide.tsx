@@ -23,7 +23,7 @@ export function Slide({ children, background, className }: SlideProps) {
       style={{ background: background ?? '#050518' }}
     >
       <div
-        className={`relative overflow-hidden shadow-2xl ${className ?? ''}`}
+        className={`relative overflow-hidden shadow-2xl flex-shrink-0 ${className ?? ''}`}
         style={{
           width,
           height,

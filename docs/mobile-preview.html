@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Mobile Preview — cinematic-deck</title>
+<style>
+body { margin:0; background:#1a1a1a; font-family: -apple-system, system-ui, sans-serif; color:#eee; padding:40px; }
+h1 { margin: 0 0 8px; font-size: 24px; }
+p.sub { margin: 0 0 40px; color: #888; font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(393px, 1fr)); gap: 40px; }
+.slot { display: flex; flex-direction: column; align-items: center; }
+.phone {
+  width: 393px; height: 852px;
+  border: 10px solid #000; border-radius: 50px;
+  overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  background: #000; position: relative;
+}
+.phone iframe {
+  width: 393px; height: 852px; border: 0; display: block;
+  background: #050518;
+}
+.label { text-align:center; margin:14px 0 0; font-size: 14px; color:#ccc; font-weight: 600; }
+.small { color:#666; font-size: 11px; font-family: monospace; margin-top:4px; }
+</style>
+</head>
+<body>
+<h1>📱 Cinematic Deck · Mobile Preview</h1>
+<p class="sub">iPhone 15 Pro frame (393 × 852) · Portrait canvas (1080×1920, scale 0.364)</p>
+
+<div class="grid">
+  <div class="slot">
+    <div class="phone"><iframe src="https://darwin7381.github.io/cinematic-deck/#0"></iframe></div>
+    <div class="label">01 · Hero (3D glass)</div>
+    <div class="small">Portrait layout · bigger text</div>
+  </div>
+  <div class="slot">
+    <div class="phone"><iframe src="https://darwin7381.github.io/cinematic-deck/#2"></iframe></div>
+    <div class="label">03 · Ecosystem scan</div>
+    <div class="small">Single column, date column hidden</div>
+  </div>
+  <div class="slot">
+    <div class="phone"><iframe src="https://darwin7381.github.io/cinematic-deck/#4"></iframe></div>
+    <div class="label">05 · 3D reality</div>
+    <div class="small">Stacked rows React/Vue</div>
+  </div>
+  <div class="slot">
+    <div class="phone"><iframe src="https://darwin7381.github.io/cinematic-deck/#5"></iframe></div>
+    <div class="label">06 · Scoring matrix</div>
+    <div class="small">Short column labels Des/2D/3D...</div>
+  </div>
+  <div class="slot">
+    <div class="phone"><iframe src="https://darwin7381.github.io/cinematic-deck/#7"></iframe></div>
+    <div class="label">08 · Terminal</div>
+    <div class="small">Vertical stack: copy top / terminal bottom</div>
+  </div>
+  <div class="slot">
+    <div class="phone"><iframe src="https://darwin7381.github.io/cinematic-deck/#8"></iframe></div>
+    <div class="label">09 · Features</div>
+    <div class="small">2×2 compact cards</div>
+  </div>
+</div>
+</body>
+</html>
