@@ -62,7 +62,7 @@ export default function Ecosystem03({ onStepsChange }: {
               <div
                 className={
                   isPortrait
-                    ? 'flex-1 flex flex-col gap-[6px] font-mono text-[18px]'
+                    ? 'flex-1 flex flex-col gap-[8px] font-mono text-[26px]'
                     : 'flex-1 grid grid-cols-2 gap-x-12 gap-y-[10px] font-mono text-[14px]'
                 }
               >
@@ -72,15 +72,15 @@ export default function Ecosystem03({ onStepsChange }: {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 + i * 0.035, ease: 'easeOut' }}
-                    className="flex items-baseline gap-3 py-[8px] border-b border-white/5"
+                    className={`flex items-baseline gap-3 border-b border-white/5 ${isPortrait ? 'py-[10px]' : 'py-[8px]'}`}
                   >
-                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${f.alive ? 'bg-emerald-400' : 'bg-rose-400/60'}`} />
-                    <span className={`flex-1 font-semibold tracking-wide ${f.alive ? 'text-white' : 'text-white/40 line-through decoration-rose-400/50'}`}>
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${f.alive ? 'bg-emerald-400' : 'bg-rose-400/60'}`} />
+                    <span className={`flex-1 font-semibold tracking-wide truncate ${f.alive ? 'text-white' : 'text-white/40 line-through decoration-rose-400/50'}`}>
                       {f.name}
                     </span>
-                    <span className={`text-white/40 text-right ${isPortrait ? 'w-[64px]' : 'w-[54px]'}`}>{f.stars}</span>
+                    <span className={`text-white/40 text-right ${isPortrait ? 'w-[96px]' : 'w-[54px]'}`}>{f.stars}</span>
                     {!isPortrait && <span className="text-white/30 w-[90px] text-right">{f.commit}</span>}
-                    <span className={`text-right truncate ${isPortrait ? 'w-[120px]' : 'w-[140px]'} ${f.alive ? 'text-indigo-300/70' : 'text-rose-400/70'}`}>
+                    <span className={`text-right truncate ${isPortrait ? 'w-[180px]' : 'w-[140px]'} ${f.alive ? 'text-indigo-300/70' : 'text-rose-400/70'}`}>
                       {f.note ?? f.tag}
                     </span>
                   </motion.div>
