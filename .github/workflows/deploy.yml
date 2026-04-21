@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy (v1 at root + v2 at /v2/)
 
 on:
   push:
@@ -27,17 +27,38 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      # ── Build v1 (old-version-v1 → site root) ──
+      - name: Install v1 deps
+        working-directory: old-version-v1
+        run: pnpm install --frozen-lockfile
 
-      - run: pnpm build
+      - name: Build v1
+        working-directory: old-version-v1
+        run: pnpm build
+
+      # ── Build v2 (v2-stage → /v2/ subpath) ──
+      - name: Install v2 deps
+        working-directory: v2-stage
+        run: pnpm install --frozen-lockfile
+
+      - name: Build v2
+        working-directory: v2-stage
+        run: pnpm build
+
+      # ── Compose the site: v1 at root, v2 at /v2/ ──
+      - name: Compose site
+        run: |
+          mkdir -p _site
+          cp -r old-version-v1/dist/* _site/
+          mkdir -p _site/v2
+          cp -r v2-stage/dist/* _site/v2/
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./_site
 
       - id: deployment
         uses: actions/deploy-pages@v4

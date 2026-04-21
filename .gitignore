@@ -1,4 +1,13 @@
-node_modules
-dist
+# Per-project gitignore exists in v2-stage/ and old-version-v1/
+# This root-level file just catches stray editor files
+
 .DS_Store
+.vite/
 *.log
+.vscode/
+.idea/
+
+# Safety nets (sub-projects should have their own)
+**/node_modules/
+**/dist/
+**/.vite/
